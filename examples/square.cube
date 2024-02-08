@@ -1,0 +1,48 @@
+a : ()[]
+b : ()[]
+c : ()[]
+d : ()[]
+p : (i)[i = 0 -> a | i = 1 -> c ]
+q : (i)[i = 0 -> b | i = 1 -> d ]
+r : (i)[i = 0 -> a | i = 1 -> b ]
+s : (i)[i = 0 -> c | i = 1 -> d ]
+alpha : (i j)[i = 0 -> p(j) | i = 1 -> q(j) | j = 0 -> r(i) | j = 1 -> s(i) ]
+---
+
+-- Square→compPath 
+? : (i j)[i = 0 -> hcomp (k)[j = 0 -> a | j = 1 -> s(k) ] p(j) |
+          i = 1 -> hcomp (k)[j = 0 -> a | j = 1 -> q(k) ] r(j) |
+          j = 0 -> a |
+          j = 1 -> d ]
+
+
+-- PathP→compPathL
+? : (i j)[i = 0 -> hcomp (k)[j = 0 -> p(k) | j = 1 -> q(k) ] r(j) |
+          i = 1 -> s(j) |
+          j = 0 -> c |
+          j = 1 -> d ]
+
+
+? : (i j)[i = 0 -> hcomp (k)[j = 0 -> c | j = 1 -> q(k) ]
+                            hcomp (k)[j = 0 -> c | j = 1 -> r(k) ]
+                                      hcomp (k)[j = 0 -> p(k) | j = 1 -> a ] a |
+          i = 1 -> s(j) |
+          j = 0 -> c |
+          j = 1 -> d ]
+
+
+-- PathP→compPathR 
+? : (i j)[i = 0 -> hcomp (k)[ j = 0 -> hcomp (l)[k = 0 -> p(l) | k = 1 -> a ] a
+                            | j = 1 -> hcomp (l)[k = 0 -> q(l) | k = 1 -> b ] b ]
+                            s(j) |
+          i = 1 -> r(j) |
+          j = 0 -> a |
+          j = 1 -> b ]
+
+
+? : (i j)[i = 0 -> hcomp (k)[j = 0 -> a | j = 1 -> hcomp (l)[k = 0 -> q(l) | k = 1 -> b ] b ]
+                            hcomp (k)[j = 0 -> a | j = 1 -> s(k) ] p(j) |
+          i = 1 -> r(j) |
+          j = 0 -> a |
+          j = 1 -> b ]
+

@@ -1,0 +1,31 @@
+cabal-version:      3.0
+name:               dedekind
+version:            0.1.0.0
+-- synopsis:
+-- description:
+license:            MIT
+license-file:       LICENSE
+author:             Maximilian Doré
+maintainer:         maximilian.dore@cs.ox.ac.uk
+-- copyright:
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+-- extra-source-files:
+
+common warnings
+    ghc-options: -Wall
+
+executable dedekind
+    import:           warnings
+    main-is:          Main.hs
+    other-modules:    Solver , Parser , KanSolver, AgdaShow
+    -- other-extensions:
+    build-depends:    attoparsec >= 0.14.4,
+                      base ^>=4.17.0.0,
+                      containers >= 0.6.6,
+                      mtl >= 2.2.2,
+                      optparse-applicative >= 0.18.1.0,
+                      text >= 2.0.1,
+                      text >= 2.0.1
+    hs-source-dirs:   app
+    default-language: Haskell2010

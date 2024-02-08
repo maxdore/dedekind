@@ -1,0 +1,12 @@
+x : ()[]
+p : (i)[i = 0 -> x | i = 1 -> x]
+q : (i)[i = 0 -> x | i = 1 -> x]
+alpha : (i j)[i = 0 -> p(j) | i = 1 -> p(j) | j = 0 -> q(i) | j = 1 -> q(i) ]
+---
+? : (i j)[i = 0 -> hcomp (k)[j = 0 -> p(0) | j = 1 -> q(k) ] p(j) |
+          i = 1 -> hcomp (k)[j = 0 -> q(0) | j = 1 -> p(k) ] q(j) |
+          j = 0 -> x |
+          j = 1 -> x ]
+
+-- flipSquare in Foundations.Path
+? : (i j)[i = 0 -> q(j) | i = 1 -> q(j) | j = 0 -> p(i) | j = 1 -> p(i) ]

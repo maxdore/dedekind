@@ -1,0 +1,12 @@
+a : ()[]
+b : ()[]
+c : ()[]
+p : (i)[i = 0 -> a | i = 1 -> b ]
+p' : (i)[i = 0 -> a | i = 1 -> b ]
+q : (i)[i = 0 -> b | i = 1 -> c ]
+q' : (i)[i = 0 -> b | i = 1 -> c ]
+alpha : (i j)[i = 0 -> p(j) | i = 1 -> p'(j) | j = 0 -> a | j = 1 -> b ]
+beta : (i j)[i = 0 -> q(j) | i = 1 -> q'(j) | j = 0 -> b | j = 1 -> c ]
+---
+-- Problem discussed on the Univalent Agda Discord channel
+? : (i j)[i = 0 -> p(j) | i = 1 -> q(j) | j = 0 -> p'(i) | j = 1 -> q'(i) ]
