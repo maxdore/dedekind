@@ -40,7 +40,7 @@ agdaBox :: Int -> [Int] -> Restr -> [Face] -> String
 agdaBox d skip fd fs = "(" ++ agdaAbstract [d+1] ++ "\955 {\n" ++
   concatMap (\((i,e) , t) ->
                agdaInd d ++ (if (i,e) == fst (head fs) then "  " else "; ") ++ "(" ++
-                 (dimName i skip) ++ " = " ++ agdaEndpoint e ++ show skip ++ ") \8594 " ++ agdaTerm (d+1) (i:skip) t ++ "\n")
+                 (dimName i skip) ++ " = " ++ agdaEndpoint e ++ ") \8594 " ++ agdaTerm (d+1) ((i+length skip):skip) t ++ "\n")
      [ f | f <- fs , fst (fst f) /= fst fd ]
   ++ agdaInd d ++ "}) (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")"
 

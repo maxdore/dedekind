@@ -1,0 +1,16 @@
+a : ()[]
+b : ()[]
+c : ()[]
+d : ()[]
+p : (i)[i = 0 -> a | i = 1 -> c ]
+q : (i)[i = 0 -> b | i = 1 -> d ]
+r : (i)[i = 0 -> a | i = 1 -> b ]
+s : (i)[i = 0 -> c | i = 1 -> d ]
+ps : (i)[i = 0 -> a | i = 1 -> d ]
+psfill : (i j)[i = 0 -> p(j) | i = 1 -> ps(j) | j = 0 -> a | j = 1 -> s(i) ]
+rq : (i)[i = 0 -> a | i = 1 -> d ]
+rqfill : (i j)[i = 0 -> r(j) | i = 1 -> rq(j) | j = 0 -> a | j = 1 -> q(i) ]
+beta : (i j)[i = 0 -> ps(j) | i = 1 -> rq(j) | j = 0 -> a | j = 1 -> d ]
+---
+-- compPath→Square
+? : (i j)[i = 0 -> p(j) | i = 1 -> q(j) | j = 0 -> r(i) | j = 1 -> s(i) ]
