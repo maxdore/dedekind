@@ -36,19 +36,22 @@ agdaAbstract is = "\955 " ++ concat (intersperse " " (map (\i -> dimName i []) i
 agdaInd :: Int -> String
 agdaInd d = concat (replicate d "  ")
 
-agdaBox :: Int -> [Int] -> Restr -> [Face] -> String
-agdaBox d skip fd fs = "(" ++ agdaAbstract [d+1] ++ "\955 {\n" ++
+agdaBox :: Int -> [Int] -> Restr -> [Face] -> Bool -> String
+agdaBox d skip fd fs isfill = "(" ++ agdaAbstract [d+1] ++ "\955 {\n" ++
   concatMap (\((i,e) , t) ->
                agdaInd d ++ (if (i,e) == fst (head fs) then "  " else "; ") ++ "(" ++
-                 (dimName i skip) ++ " = " ++ agdaEndpoint e ++ ") \8594 " ++ agdaTerm (d+1) ((i+length skip):skip) t ++ "\n")
+                 (dimName (i+length skip) skip) ++ " = " ++ agdaEndpoint e ++ ") \8594 " ++ agdaTerm (d+1) ((i+length skip):skip) t ++ "\n")
      [ f | f <- fs , fst (fst f) /= fst fd ]
-  ++ agdaInd d ++ "}) (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")"
+  ++ agdaInd d ++ "})" ++
+  if isfill
+    then "(inS (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ") " ++ dimName (fst fd+length skip) skip ++ ")"
+    else "(" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")"
 
 
 agdaTerm :: IVar -> [IVar] -> Term -> String
 agdaTerm d skip (App p (_ , psi)) = p ++ " " ++ (concat (intersperse " " (map (\f -> agdaFormula f skip) psi)))
-agdaTerm d skip (Comp fd (Bdy d' fs)) = "hcomp " ++ agdaBox d (map ((-)1) skip) fd fs
-agdaTerm d skip (Fill fd (Bdy d' fs)) = "hfill " ++ agdaBox (d+1) skip fd fs
+agdaTerm d skip (Comp fd (Bdy d' fs)) = "hcomp " ++ agdaBox d (map ((-)1) skip) fd fs False
+agdaTerm d skip (Fill fd (Bdy d' fs)) = "hfill " ++ agdaBox d (map ((-)1) skip) fd fs True
 
 
  -- "\955 " ++ concat (intersperse " " (take (domdim sigma) dimNames)) ++ " \8594 " ++
