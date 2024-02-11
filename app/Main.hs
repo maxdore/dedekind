@@ -37,10 +37,9 @@ sample = Session
 
 main :: IO ()
 main = do
-  Session f _ t <- execParser (info (sample <**> helper)
+  Session f v t <- execParser (info (sample <**> helper)
       ( fullDesc
         <> header "dedekind - a boundary solver for Dedekind cubical type theory" ))
-  let v = True
   deb v $ "Solving problems in file " ++ show f
   -- deb v "Parsing..."
   (ctxt , goals) <- loadExample f
@@ -48,7 +47,7 @@ main = do
   deb v $ show (length goals) ++ " goals."
 
   mapM_ (\(gi , phi) -> do
-    deb v $ "SOLVING " ++ show gi ++ " : " ++ show phi
+    putStr $ "SOLVING " ++ show gi ++ " : " ++ show phi ++ "\n"
     start <- getCPUTime
     comp <- T.timeout (t * 1000000) (do
       let !r = solve ctxt phi
@@ -57,13 +56,11 @@ main = do
       Just res -> do
         end <- getCPUTime
         let diff = (end - start) `div` 1000000000
-        putStr ("SOLVED IN " ++ show diff ++ "ms")
-        print res
+        putStr ("SOLVED IN " ++ show diff ++ "ms\n")
+        -- print res
         putStrLn $ agdaShow phi res
       Nothing -> putStr "TIMEOUT"
            ) (zip [1..length goals] goals)
-
-
 
 
 deb :: Bool -> String -> IO ()

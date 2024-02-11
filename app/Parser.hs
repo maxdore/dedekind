@@ -147,7 +147,7 @@ fileParser = do
 loadExample :: String -> IO (Ctxt , [Bdy])
 loadExample filename = do
   file <- TIO.readFile filename
-  print file
+  -- print file
   case parseOnly fileParser file of
     Right res -> return res
     Left err -> error $ "Could not parse file" ++ err
