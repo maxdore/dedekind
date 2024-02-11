@@ -13,7 +13,7 @@ The solver is written in Haskell and can be built locally with cabal:
 
 The solver can be called on `.cube` files, which contain a cubical cell context
 and boundary problems over the context. For example, we can define a cell
-context with two paths as follows, and provide a list of boundary problems:
+context with two paths and specify a list of boundary problems over it as follows:
 
 ```
 p : (i)[]
