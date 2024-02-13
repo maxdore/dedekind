@@ -58,7 +58,7 @@ main = do
         end <- getCPUTime
         let diff = (end - start) `div` 1000000000
         putStr ("SOLVED IN " ++ show diff ++ "ms\n")
-        -- print res
+        deb v $ show res
         putStrLn $ agdaShow phi res
       Nothing -> putStr "TIMEOUT"
            ) (zip [1..length goals] goals)
