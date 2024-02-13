@@ -2,9 +2,7 @@ x : ()[]
 p : (i j k)[i = 0 -> x | i = 1 -> x | j = 0 -> x | j = 1 -> x | k = 0 -> x | k = 1 -> x ]
 q : (i j k)[i = 0 -> x | i = 1 -> x | j = 0 -> x | j = 1 -> x | k = 0 -> x | k = 1 -> x ]
 ---
-
-
-_ : (i j k l m)[i = 0 -> hcomp (n)[
+? : (i j k l m)[i = 0 -> hcomp (n)[
                             j = 0 -> p(k,l /\ n,m) |
                             j = 1 -> p(k,l /\ n,m) |
                             k = 0 -> q(j,l,m) |
@@ -30,15 +28,3 @@ _ : (i j k l m)[i = 0 -> hcomp (n)[
               m = 1 -> x ]
 
 
-
-
-_ : (i j k l m)[i = 0 -> p(k,l,m) |
-                i = 1 -> p(k,l,m) |
-                j = 0 -> p(k,l,m) |
-                j = 1 -> p(k,l,m) |
-                k = 0 -> q(i,j,m) |
-                k = 1 -> q(i,j,m) |
-                l = 0 -> q(i,j,m) |
-                l = 1 -> q(i,j,m) |
-                m = 0 -> x |
-                m = 1 -> x ]

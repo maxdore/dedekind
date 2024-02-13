@@ -1,0 +1,14 @@
+x : ()[]
+p : (i j)[i = 0 -> x | i = 1 -> x | j = 0 -> x | j = 1 -> x ]
+q : (i j)[i = 0 -> x | i = 1 -> x | j = 0 -> x | j = 1 -> x ]
+---
+-- direct proof with path compositions in goal boundary
+? : (i j k)[i = 0 -> hcomp (l)[ j = 0 -> p(0,0) | j = 1 -> q(l,k) | k = 0 -> x | k = 1 -> x ] p(j,k) |
+            i = 1 -> hcomp (l)[ j = 0 -> q(0,0) | j = 1 -> p(l,k) | k = 0 -> x | k = 1 -> x ] q(j,k) |
+            j = 0 -> x |
+            j = 1 -> x |
+            k = 0 -> x |
+            k = 1 -> x ]
+
+
+

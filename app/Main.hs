@@ -47,10 +47,11 @@ main = do
   deb v $ show (length goals) ++ " goals."
 
   mapM_ (\(gi , phi) -> do
-    putStr $ "SOLVING " ++ show gi ++ " : " ++ show phi ++ "\n"
+    putStr $ "SOLVING problem " ++ show gi ++ "...\n"
+    deb v $ show phi
     start <- getCPUTime
     comp <- T.timeout (t * 1000000) (do
-      let !r = solve ctxt phi
+      let !r = solve ctxt v phi
       return r)
     case comp of
       Just res -> do

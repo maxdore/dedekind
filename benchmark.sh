@@ -27,4 +27,4 @@ done
 
 echo "Found $NRPROBS problems in $NRFILES files"
 echo "Solved $NRSOLVED problems, timeout of $TIMEOUT sec on $NRTIMEOUT problems"
-echo "Spent $RUNTIME ms on all solved problems, on average $(bc <<<"scale=2; $RUNTIME / $NRSOLVED") ms"
+echo "Spent on average $(bc <<<"scale=2; $RUNTIME / $NRSOLVED") ms on each problem, in total $RUNTIME ms"

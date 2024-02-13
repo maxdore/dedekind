@@ -1,13 +1,11 @@
 module AgdaShow where
 
-
 import Data.List
-
 
 import Contortion
 import CellContext
 
-
+import Debug.Trace
 
 dimNames :: [String]
 dimNames = ["i","j","k","l","m","n","o","p","q"]
@@ -44,17 +42,14 @@ agdaBox d skip fd fs isfill = "(" ++ agdaAbstract [d+1] ++ "\955 {\n" ++
      [ f | f <- fs , fst (fst f) /= fst fd ]
   ++ agdaInd d ++ "})" ++
   if isfill
-    then "(inS (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ") " ++ dimName (fst fd+length skip) skip ++ ")"
-    else "(" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")"
+    then " (inS (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")) " ++ dimName (fst fd+length skip) skip
+    else " (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")"
 
 
 agdaTerm :: IVar -> [IVar] -> Term -> String
 agdaTerm d skip (App p (_ , psi)) = p ++ " " ++ (concat (intersperse " " (map (\f -> agdaFormula f skip) psi)))
-agdaTerm d skip (Comp fd (Bdy d' fs)) = "hcomp " ++ agdaBox d (map ((-)1) skip) fd fs False
-agdaTerm d skip (Fill fd (Bdy d' fs)) = "hfill " ++ agdaBox d (map ((-)1) skip) fd fs True
-
-
- -- "\955 " ++ concat (intersperse " " (take (domdim sigma) dimNames)) ++ " \8594 " ++
+agdaTerm d skip (Comp fd (Bdy d' fs)) = "hcomp " ++ agdaBox d (skip) fd fs False
+agdaTerm d skip (Fill fd (Bdy d' fs)) = "hfill " ++ agdaBox d (skip) fd fs True
 
 agdaShow :: Bdy -> Term -> String
 agdaShow (Bdy d _) t = agdaAbstract [1..d] ++ agdaTerm 2 [] t

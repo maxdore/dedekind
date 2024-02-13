@@ -8,8 +8,6 @@ import Control.Monad.State
 import Contortion
 import CellContext
 
-
-
 contortionSolver :: Ctxt -> Bdy -> Maybe Term
 contortionSolver ctxt phi = msum (map (contort ctxt phi) ctxt)
 
@@ -21,7 +19,6 @@ contort ctxt phi@(Bdy m _) (p , Bdy n _) = do
                 [ (ie , bdyFace phi ie) | ie <- restrictions m , sideSpec phi ie])
 
   sigma <- foldM (\sigma (ie , phiie) -> do
-      -- traceShowM sigma
       theta <- case phiie of
           App q rs | q == p -> Just $ injPPMap (cont2pmap rs)
           _ -> do
@@ -34,7 +31,6 @@ contort ctxt phi@(Bdy m _) (p , Bdy n _) = do
     (createPPMap m n)
     faces
 
-  -- traceM $ "RES " ++ show sigma
   if ppmapNotEmpty sigma
     then return (App p (pmap2cont (fstPMap sigma)))
     else Nothing

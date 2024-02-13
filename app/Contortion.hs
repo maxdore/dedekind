@@ -110,12 +110,8 @@ getPMaps sigma = map Map.fromList (getPMaps' (Map.toList sigma))
   filterRec :: Vert -> Vert -> [(Vert , [Vert])] -> [(Vert , [Vert])]
   filterRec x v = map (\(y, us) -> (y , [ u | u <- us , (y `below` x) --> (u `below` v) ]))
 
--- normalisePPMap :: PPMap -> PPMap
--- normalisePPMap = Map.map ()
-  
 combinePMaps :: [PMap] -> PPMap
 combinePMaps ss = Map.mapWithKey (\x _ -> sort (nub (map (! x) ss))) (head ss)
-
 
 ppmapNotEmpty :: PPMap -> Bool
 ppmapNotEmpty sigma = all (not . null) (map snd (Map.toList sigma))
