@@ -3,6 +3,7 @@ module ContortionSolver where
 import Data.Map ((!))
 import Data.List
 
+import Control.Monad
 import Control.Monad.State
 
 import Contortion

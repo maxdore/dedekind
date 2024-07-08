@@ -41,38 +41,25 @@ bind i js = sort $ free!!(i-1) : js
   where
     free = [1..] \\ js
 
-agdaBox :: Int -> [Int] -> Restr -> [Face] -> Bool -> String
-agdaBox d skip fd fs isfill = "(" ++ agdaAbstract [d+1] ++ "\955 {\n" ++
-  concatMap (\((i,e) , t) ->
-               agdaInd d ++ (if (i,e) == fst (head fs) then "  " else "; ") ++ "(" ++
-                 show skip ++ " :: " ++ (dimName i skip) ++ " = " ++ agdaEndpoint e ++ ") \8594 " ++ agdaTerm (d+1) (bind i skip) t ++ "\n")
-     [ f | f <- fs , fst (fst f) /= fst fd ]
-  ++ agdaInd d ++ "})" ++
-  if isfill
-    then " (inS (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")) " ++ dimName (fst fd) skip
-    else " (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")"
-
+offset :: Restr -> IVar -> IVar
+offset fd i = if fst fd < i then i-1 else i
 
 agdaTerm :: IVar -> [IVar] -> Term -> String
-agdaTerm d skip (App p (_ , psi)) = -- show skip ++ " :: " ++
+agdaTerm d skip (App p (_ , psi)) =
   p ++ " " ++ (concat (intersperse " " (map (\f -> agdaFormula f skip) psi)))
-agdaTerm d skip (Comp fd (Bdy d' fs)) = "hcomp (" ++ agdaAbstract [d+1] ++ "\955 {\n" ++
-  concatMap (\((i,e) , t) ->
-               agdaInd d ++ (if (i,e) == fst (head fs) then "  " else "; ") ++ "(" ++
-                 -- show skip ++ " :: " ++
-                 (dimName i skip) ++ " = " ++ agdaEndpoint e ++ ") \8594 " ++ agdaTerm (d+1) (bind i skip) t ++ "\n")
-     [ f | f <- fs , fst (fst f) /= fst fd ]
-  ++ agdaInd d ++ "}) (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")"
+agdaTerm d skip (Comp fd (Bdy d' fs)) =
+  "hcomp (" ++ agdaAbstract [d+1] ++ "\955 {\n  " ++ agdaInd d ++
+  concat (intersperse ("\n" ++ agdaInd d ++ "; ") (map (\((i,e) , t) ->
+     "(" ++ (dimName i skip) ++ " = " ++ agdaEndpoint e ++ ") \8594 " ++ agdaTerm (d+1) (bind i skip) t)
+     [ f | f <- fs , fst (fst f) /= fst fd ]))
+  ++ "\n" ++ agdaInd d ++ "}) (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")"
 
-agdaTerm d skip (Fill fd (Bdy d' fs)) = "hfill (" ++ agdaAbstract [d+1] ++ "\955 {\n" ++
-  concatMap (\((i,e) , t) ->
-               agdaInd d ++ (if (i,e) == fst (head fs) then "  " else "; ") ++ "(" ++
-                 -- show skip ++ " :: " ++
-                 (dimName i (bind (fst fd) skip)) ++ " = " ++ agdaEndpoint e ++ ") \8594 " ++ agdaTerm (d+1) (bind i (bind (fst fd) skip)) t ++ "\n")
-     [ f | f <- fs , fst (fst f) /= fst fd ]
-  ++ agdaInd d ++ "}) (inS (" ++ agdaTerm d skip (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")) " ++ dimName (fst fd) skip
-
-
+agdaTerm d skip (Fill fd (Bdy d' fs)) =
+  "hfill (" ++ agdaAbstract [d+1] ++ "\955 {\n  " ++ agdaInd d ++
+  concat (intersperse ("\n" ++ agdaInd d ++ "; ") (map (\((i,e) , t) ->
+     "(" ++ (dimName (offset fd i) (bind (fst fd) skip)) ++ " = " ++ agdaEndpoint e ++ ") \8594 " ++ agdaTerm (d+1) (bind (offset fd i) (bind (fst fd) skip)) t)
+     [ f | f <- fs , fst (fst f) /= fst fd ]))
+  ++ "\n" ++ agdaInd d ++ "}) (inS (" ++ agdaTerm d (bind (fst fd) skip) (head [ t | ((i,e),t) <- fs , i == fst fd , negI e == snd fd ]) ++ ")) " ++ dimName (fst fd) skip
 
 agdaShow :: Bdy -> Term -> String
-agdaShow (Bdy d _) t = agdaAbstract [1..d] ++ agdaTerm 2 [] t
+agdaShow (Bdy d _) t = agdaAbstract [1..d] ++ agdaTerm d [] t

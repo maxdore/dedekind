@@ -52,8 +52,8 @@ opensides phi@(Bdy d fs) depth =
 kanFiller :: Ctxt -> Bdy -> [Term]
 kanFiller ctxt phi@(Bdy d fs) =
   case unspec phi of
-    [] -> [ Fill cd psi | (fd , Comp cd psi) <- fs , fills phi fd (Comp cd psi) ]
-    [cd] -> if length [ fd | (fd , Comp cd psi) <- fs ] == 0 then [ Fill cd phi ] else []
+    [] -> [ Fill fd (Bdy d (filter (\f -> fst f /= fd) fs)) | (fd , Comp cd psi) <- fs , fills phi fd (Comp cd psi) ]
+    [cd] -> if null [ fd | (fd , Comp cd psi) <- fs ] then [ Fill cd phi ] else []
     _ -> [] -- here we could in principle fill, but need to make choice for the face in which we are not filling
 
 fills :: Bdy -> Restr -> Term -> Bool

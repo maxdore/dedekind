@@ -49,7 +49,7 @@ parseBdy ivs = do
 
 debruijn :: IVarName -> [IVarName] -> Parser IVar
 debruijn iv ivs = do
-  when (iv `notElem` ivs) (error "Interval variable not bound in boundary")
+  when (iv `notElem` ivs) (error $ "Interval variable not bound in boundary: " ++ show iv ++ " in " ++ show ivs)
   return $ fromJust (elemIndex iv ivs) + 1
 
 
@@ -73,7 +73,7 @@ parseAssign ivs = do
   return ((i,e) , t)
 
 parseTerm :: [IVarName] -> Parser Term
-parseTerm ivs = parseComp ivs <|> parseApp ivs <|> parsePoint ivs
+parseTerm ivs = parseComp ivs <|> parseFill ivs <|> parseApp ivs <|> parsePoint ivs
 
 parseComp :: [IVarName] -> Parser Term
 parseComp ivs = do
@@ -83,6 +83,15 @@ parseComp ivs = do
   skipSpace
   back <- parseTerm ivs
   return $ Comp (length ivs+1 , I1) (Bdy (length ivs+1) (tube ++ [(length ivs+1 , I0) +> back]))
+
+parseFill :: [IVarName] -> Parser Term
+parseFill ivs = do
+  string "hfill"
+  skipSpace
+  (Bdy _ tube) <- parseBdy ivs
+  skipSpace
+  back <- parseTerm ivs
+  return $ Fill (length ivs , I1) (Bdy (length ivs+1) (tube ++ [(length ivs+1 , I0) +> back]))
 
 parseApp :: [IVarName] -> Parser Term
 parseApp ivs = do
