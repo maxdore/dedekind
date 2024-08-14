@@ -19,7 +19,7 @@ import CellContext
 
 type IVarName = String
 
-parseId = many1 (letter <|> char '\'')
+parseId = many1 (letter <|> char '\'' <> char '₀' <> char '₁' <> char '₂' <> char '₃' <> char '₄' <> char '₅' <> char '₆' <> char '₇' <> char '₈' <> char '₉')
 
 parseEndpoint :: Parser Endpoint
 parseEndpoint = do
@@ -72,8 +72,13 @@ parseAssign ivs = do
   -- traceShowM t
   return ((i,e) , t)
 
+-- crude,incomplete, but quick way of allowing parentheses around terms
+parseTerm' :: [IVarName] -> Parser Term
+parseTerm' ivs = parseComp ivs <|> parseFill ivs <|> parseApp ivs <|> parsePoint ivs
+
 parseTerm :: [IVarName] -> Parser Term
-parseTerm ivs = parseComp ivs <|> parseFill ivs <|> parseApp ivs <|> parsePoint ivs
+parseTerm ivs = (char '(' >> (parseTerm' ivs >>= \x -> char ')' >> pure x))  <|> parseTerm' ivs
+
 
 parseComp :: [IVarName] -> Parser Term
 parseComp ivs = do
