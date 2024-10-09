@@ -2,7 +2,9 @@
 
 This Haskell tool can be used to resolve proof obligations in [Cubical
 Agda](https://agda.readthedocs.io/en/v2.6.4.1/language/cubical.html) which
-involve connections and Kan compositions.
+involve connections and Kan compositions. The theory behind the solver is 
+described in detail in the paper 
+[Automating Boundary Filling in Cubical Agda](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.FSCD.2024.22).
 
 ## Installation
 
